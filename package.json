@@ -1,0 +1,10 @@
+{
+  "name": "rsc-guide",
+  "version": "0.0.1",
+  "description": "",
+  "author": "",
+  "devDependencies": {
+    "eslint": "^8.41.0",
+    "prettier": "^2.8.8"
+  }
+}
