@@ -57,7 +57,9 @@ A sample serialised output of a RSC component
 
 ## Client Components
 
-TODO
+When a module is marked with `"use client"` directive, the compiler knows that this module is a client component and should be bundled and sent to the client. Client components are like anyother React component. They can use hooks like `useState` and `useEffect` and can use `Context` as well. It is important to note that all the modules that are imported in the client component are also bundled and sent to the client. And it is not required to mark each and every module with `"use client"` directive. The compiler will automatically mark all the modules that are imported in the client component as client components.
+
+> Note: In Waku, the client components are not rendered on the server, instead voids are created and sent to the client. But Next.js renders the client components on the server and sends it to the client along with the rendered HTML on the initial request.
 
 ## Gotchas
 
