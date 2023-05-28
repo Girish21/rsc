@@ -28,7 +28,7 @@ But how does it all fit together 🤔.
 
 ![RSC Architecture](./assets/basic-rsc-architecture.png)
 
-As we have seen in the previous section an app built with RSC will have server components and client components. For every request to the server the server has to execute and render the server component and send it to the client. The client component is bundled and sent to the client (note: The client component is not rendered on the server in Waku instead special `voids` are created, but Next.js renders the client component during the SSR phase and sends it to the client along with the rendered HTML).
+As we have seen in the previous section an app built with RSC will have server components and client components. For every request to the server the server has to execute the server component and send it to the client. The client component is bundled and sent to the client (note: The client component is not rendered on the server in Waku instead special `voids` are created, but Next.js renders the client component during the SSR phase and sends it to the client along with the rendered HTML).
 
 In the browser, the index HTML is downloaded and React is initialised. All the module dependencies are downloaded which includes the rendered server components and the client components. React interprets the rendered server components response and constructs a VDOM. It then fills in the voids in the VDOM with the client components (remember the client components are not rendered on the server). The client components are then commited to the DOM and the app is ready to be interacted with.
 
@@ -36,7 +36,24 @@ This is the high level overview of how RSC works. Let's take a look at the diffe
 
 ## Server Components
 
-TODO
+Server components are like anyother React component with a couple of differences. Server components can be an `async` component, meaning they can await async function calls in the component body where the execution of the component `suspends` until the async function call is resolved.
+
+The other important distinction is that no client side code can be executed in the server component. This means that we cannot use hooks like `useState` or `useEffect` in the server component. This is because the server component is executed on the server and not on the client. Hooks like `useState` and `useEffect` are client side hooks and cannot be executed on the server. And `Context` cannot be used in the server component as well.
+
+One more important thing to note is that server components are not rendered on the server. Instead they are executed on the server and the response is sent to the client. The client then renders the server component response and fills in the voids with the client components. **_Wait!_** Isn't this contradictory to what we said earlier? We said that server components are rendered on the server and client components are rendered on the client. Well, yes and no. This is the architecture of Waku, but Next.js renders the both the server and client components on the server and sends it to the client along with the rendered HTML (on the initial request, on subsequent requests from the client onlt the RSC output is fetched).
+
+### So what does the output of a server component look like?
+
+The output of RSC is nothing but a funcky JSON representation of React VDOM 🙂. Yes that's right! RSC produces VDOM and sends it to the client. The client then reconstructs the VDOM from the serialised JSON and commits it to the DOM by filling in the `voids` with Client Components.
+
+A sample serialised output of a RSC component
+
+```txt
+1:I{"id":"/assets/rsc0-40fcedd3.js","chunks":["/assets/rsc0-40fcedd3.js"],"name":"Counter","async":false}
+0:["$","div",null,{"style":{"border":"3px red dashed","margin":"1em","padding":"1em"},"children":[["$","h1",null,{"children":["Hello ","Waku","!!"]}],["$","h3",null,{"children":"This is a server component."}],["$","$L1",null,{}]]}]
+```
+
+> It clicked to me when I read RSC as React Serialised Components instead of React Server Components 😅.
 
 ## Client Components
 
