@@ -28,12 +28,11 @@ But how does it all fit together 🤔.
 
 ![RSC Architecture](./assets/basic-rsc-architecture.png)
 
-TODO:
+As we have seen in the previous section an app built with RSC will have server components and client components. For every request to the server the server has to execute and render the server component and send it to the client. The client component is bundled and sent to the client (note: The client component is not rendered on the server in Waku instead special `voids` are created, but Next.js renders the client component during the SSR phase and sends it to the client along with the rendered HTML).
 
-- talk about server component running on the server
-- talk about client copmonent directly being ran on the client
-- talk about the curx of RSC i.e. serialised VDOM
-- talk about how React on the client fills in the voids in the VDOM with server components
+In the browser, the index HTML is downloaded and React is initialised. All the module dependencies are downloaded which includes the rendered server components and the client components. React interprets the rendered server components response and constructs a VDOM. It then fills in the voids in the VDOM with the client components (remember the client components are not rendered on the server). The client components are then commited to the DOM and the app is ready to be interacted with.
+
+This is the high level overview of how RSC works. Let's take a look at the different components in detail.
 
 ## Server Components
 
